@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.5.0" camunda:diagramRelationId="8f8728a7-5f47-4ff7-9ec6-794e58dd2ff2">
+  <bpmn:collaboration id="vendor">
+    <bpmn:participant id="vendorManagement" name="Vendor Management" processRef="vendor-management-services" />
+  </bpmn:collaboration>
+  <bpmn:process id="vendor-management-services" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0whvvhy">
+      <bpmn:lane id="MerchantLane" name="Merchant">
+        <bpmn:flowNodeRef>MerchantTask</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Vendor_SystemLane" name="Vendor_System">
+        <bpmn:flowNodeRef>ApprovedGateway</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UpdateRegistrationStatusTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UpdateRegistrationStatusTask1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ProcessFormTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UploadDocumentTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>MessageReceivedEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEndEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEndEvent1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SendApprovedNotificationTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>RejectNotificationTask</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="MerchantTask" name="Merchant">
+      <bpmn:incoming>SequenceFlow_0zy9axk</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1efoddd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ApprovedGateway" name="Approved?">
+      <bpmn:incoming>SequenceFlow_1efoddd</bpmn:incoming>
+      <bpmn:outgoing>YesSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>NoSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="UpdateRegistrationStatusTask" name="Update RegistrationStatus" camunda:expression="decidelater1">
+      <bpmn:incoming>YesSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0p9ja67</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="UpdateRegistrationStatusTask1" name="Update RegistrationStatus" camunda:expression="decidelater2">
+      <bpmn:incoming>NoSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0m2z33f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ProcessFormTask" name="Process Form" camunda:expression="decidelater3">
+      <bpmn:incoming>SequenceFlow_1o6wq1m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1qhfpl2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="UploadDocumentTask" name="Upload Document" camunda:expression="decidelater4">
+      <bpmn:incoming>SequenceFlow_0u2xmfv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0zy9axk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartStartEvent" name="Start">
+      <bpmn:outgoing>SequenceFlow_1o6wq1m</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="MessageReceivedEvent" name="MessageReceived">
+      <bpmn:incoming>SequenceFlow_1qhfpl2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0u2xmfv</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cpmnnb" messageRef="Message_1plu74z" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndEndEvent" name="End">
+      <bpmn:incoming>SequenceFlow_1861lnj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEndEvent1" name="End">
+      <bpmn:incoming>SequenceFlow_0rdtxms</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="SendApprovedNotificationTask" name="Send Approved Notification" camunda:expression="decidelater">
+      <bpmn:incoming>SequenceFlow_0p9ja67</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1861lnj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="RejectNotificationTask" name="Reject Notification" camunda:expression="decidelater6">
+      <bpmn:incoming>SequenceFlow_0m2z33f</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rdtxms</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0rdtxms" sourceRef="RejectNotificationTask" targetRef="EndEndEvent1" />
+    <bpmn:sequenceFlow id="SequenceFlow_0m2z33f" sourceRef="UpdateRegistrationStatusTask1" targetRef="RejectNotificationTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_1861lnj" sourceRef="SendApprovedNotificationTask" targetRef="EndEndEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_0p9ja67" sourceRef="UpdateRegistrationStatusTask" targetRef="SendApprovedNotificationTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_0zy9axk" sourceRef="UploadDocumentTask" targetRef="MerchantTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_0u2xmfv" sourceRef="MessageReceivedEvent" targetRef="UploadDocumentTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_1qhfpl2" sourceRef="ProcessFormTask" targetRef="MessageReceivedEvent" />
+    <bpmn:sequenceFlow id="NoSequenceFlow" name="No" sourceRef="ApprovedGateway" targetRef="UpdateRegistrationStatusTask1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${notapproved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="YesSequenceFlow" name="yes" sourceRef="ApprovedGateway" targetRef="UpdateRegistrationStatusTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1efoddd" sourceRef="MerchantTask" targetRef="ApprovedGateway" />
+    <bpmn:sequenceFlow id="SequenceFlow_1o6wq1m" sourceRef="StartStartEvent" targetRef="ProcessFormTask" />
+  </bpmn:process>
+  <bpmn:message id="Message_1plu74z" name="MessageReceived" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="vendor">
+      <bpmndi:BPMNShape id="Participant_0qylkac_di" bpmnElement="vendorManagement" isHorizontal="true">
+        <dc:Bounds x="160" y="90" width="1098" height="550" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0tb88cc_di" bpmnElement="Vendor_SystemLane" isHorizontal="true">
+        <dc:Bounds x="190" y="90" width="1068" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1uh5ocl_di" bpmnElement="MerchantLane" isHorizontal="true">
+        <dc:Bounds x="190" y="350" width="1068" height="290" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1o6wq1m_di" bpmnElement="SequenceFlow_1o6wq1m">
+        <di:waypoint x="288" y="190" />
+        <di:waypoint x="320" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0vlw71v_di" bpmnElement="MerchantTask">
+        <dc:Bounds x="480" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0v2zhvq_di" bpmnElement="ApprovedGateway" isMarkerVisible="true">
+        <dc:Bounds x="605" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="653" y="233" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1efoddd_di" bpmnElement="SequenceFlow_1efoddd">
+        <di:waypoint x="580" y="430" />
+        <di:waypoint x="630" y="430" />
+        <di:waypoint x="630" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0b1luuu_di" bpmnElement="YesSequenceFlow">
+        <di:waypoint x="630" y="225" />
+        <di:waypoint x="630" y="180" />
+        <di:waypoint x="740" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="200" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_12zuaeh_di" bpmnElement="NoSequenceFlow">
+        <di:waypoint x="655" y="250" />
+        <di:waypoint x="700" y="250" />
+        <di:waypoint x="700" y="290" />
+        <di:waypoint x="750" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="267" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_10yi46r_di" bpmnElement="ProcessFormTask">
+        <dc:Bounds x="320" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0q67es1_di" bpmnElement="UpdateRegistrationStatusTask">
+        <dc:Bounds x="740" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1q38bui_di" bpmnElement="UpdateRegistrationStatusTask1">
+        <dc:Bounds x="750" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qhfpl2_di" bpmnElement="SequenceFlow_1qhfpl2">
+        <di:waypoint x="420" y="200" />
+        <di:waypoint x="442" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0u2xmfv_di" bpmnElement="SequenceFlow_0u2xmfv">
+        <di:waypoint x="478" y="200" />
+        <di:waypoint x="500" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zy9axk_di" bpmnElement="SequenceFlow_0zy9axk">
+        <di:waypoint x="550" y="240" />
+        <di:waypoint x="550" y="320" />
+        <di:waypoint x="530" y="320" />
+        <di:waypoint x="530" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1xxdqya_di" bpmnElement="UploadDocumentTask">
+        <dc:Bounds x="500" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1j38x8f_di" bpmnElement="StartStartEvent">
+        <dc:Bounds x="252" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="258" y="215" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_18khz76_di" bpmnElement="MessageReceivedEvent">
+        <dc:Bounds x="442" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="418" y="225" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0p9ja67_di" bpmnElement="SequenceFlow_0p9ja67">
+        <di:waypoint x="840" y="180" />
+        <di:waypoint x="930" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0wxdh57_di" bpmnElement="EndEndEvent">
+        <dc:Bounds x="1122" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1130" y="205" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1861lnj_di" bpmnElement="SequenceFlow_1861lnj">
+        <di:waypoint x="1030" y="180" />
+        <di:waypoint x="1122" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0m2z33f_di" bpmnElement="SequenceFlow_0m2z33f">
+        <di:waypoint x="850" y="290" />
+        <di:waypoint x="950" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_17xnhtc_di" bpmnElement="EndEndEvent1">
+        <dc:Bounds x="1152" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1160" y="315" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rdtxms_di" bpmnElement="SequenceFlow_0rdtxms">
+        <di:waypoint x="1050" y="290" />
+        <di:waypoint x="1152" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1r6cq09_di" bpmnElement="SendApprovedNotificationTask">
+        <dc:Bounds x="930" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1s74xk7_di" bpmnElement="RejectNotificationTask">
+        <dc:Bounds x="950" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
